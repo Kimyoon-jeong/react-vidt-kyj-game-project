@@ -36,7 +36,7 @@ const RspPage = () => {
     //가위바위보 버튼을 누르면 숫자(0,1,2)숫자로 변환
     let user_rsp = rspArr.indexOf(e.target.innerText);
     //컴퓨터 램성 생성(0~2)
-    let com_rsp = Math.floor(Math.random() * 2);
+    let com_rsp = Math.floor(Math.random() * 3);
 
     //결과 스트링
     let result = getResult(e.target.innerText, rspArr[com_rsp]);
@@ -83,9 +83,10 @@ const RspPage = () => {
     <main>
       <div className="container mt-5">
         <div className="row">
-          <RspCard player={players[0]} onClick={handleClick}></RspCard>
-          <RspCard player={players[1]} onClick={handleClick}></RspCard>
-          <RspCard player={players[2]} onClick={handleClick}></RspCard>
+          {players &&
+            players.map((player) => (
+              <RspCard player={player} onClick={handleClick}></RspCard>
+            ))}
         </div>
       </div>
     </main>

@@ -37,6 +37,22 @@ const BoardListPage = () => {
       });
   };
 
+  const deleteBoard = (e) => {
+    const { name, value } = e.target;
+
+    console.log(name + "::" + value);
+
+    boardService
+      .remove(value)
+      .then((response) => {
+        console.log(response);
+        initBoards();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   return (
     <div className="container mt-3">
       <div className="container-fluid">
@@ -92,7 +108,7 @@ const BoardListPage = () => {
                           <button
                             className="btn btn-success"
                             value={board.bid}
-                            // onClick={deleteBoard}
+                            onClick={deleteBoard}
                           >
                             삭제
                           </button>

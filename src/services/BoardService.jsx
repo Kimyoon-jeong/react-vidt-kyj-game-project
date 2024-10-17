@@ -12,8 +12,19 @@ const write = (data) => {
   return http.post(`/boards/`, data); //"boards/" + id 같음
 };
 
+//글번호에 맞는 게시판 글 가져오기
+const get = (id) => {
+  return http.get(`boards/${id}`); //"boards/" + id 같음
+};
+
+const update = (data) => {
+  return http.put(`/boards/`, data); //"boards/" + id 같음
+};
+
 export default {
   getPagingList,
   remove,
   write,
+  get,
+  update,
 };

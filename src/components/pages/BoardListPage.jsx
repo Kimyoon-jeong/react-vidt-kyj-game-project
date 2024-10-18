@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import boardService from "../../services/BoardService";
 import { Link } from "react-router-dom";
+import Pagingnation from "../board/Pagingnation";
 
 const BoardListPage = () => {
   const [boards, setBoards] = useState([]);
+  //http://192.168.0.10:8282/boards/list
+  const [paging, setPaging] = useState({});
 
   // 정리하면 아래와 같다.
 
@@ -31,6 +34,9 @@ const BoardListPage = () => {
       .then((response) => {
         console.log(response);
         setBoards(response.data.boards);
+
+        console.log(response.data.page);
+        setPaging(response.data.page);
       })
       .catch((e) => {
         console.log(e);
@@ -44,8 +50,8 @@ const BoardListPage = () => {
 
     boardService
       .remove(value)
-      .then((response) => {
-        console.log(response);
+      .then((respose) => {
+        console.log(respose);
         initBoards();
       })
       .catch((e) => {
@@ -66,6 +72,7 @@ const BoardListPage = () => {
           .
         </p>
 
+        {/* <!-- DataTales Example --> */}
         <div className="card shadow mb-4">
           <div className="card-header py-3">
             <h6 className="m-0 font-weight-bold text-primary">
@@ -121,10 +128,7 @@ const BoardListPage = () => {
               </table>
             </div>
             {/* 페이징           */}
-            {/* <PaginationB5
-              paging={paging}
-              onClickPaging={onClickPaging}
-            ></PaginationB5> */}
+            {<Pagingnation paging={paging}></Pagingnation>}
             <hr />
             <Link to="/boards/write">
               <button type="button" className="btn btn-primary">
@@ -135,9 +139,8 @@ const BoardListPage = () => {
         </div>
       </div>
     </div>
-    // <!-- /.container-fluid --> );
+    // <!-- /.container-fluid -->);
   );
 };
 
 export default BoardListPage;
-

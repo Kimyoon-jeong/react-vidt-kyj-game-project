@@ -9,7 +9,7 @@ const remove = (id) => {
 };
 
 const write = (data) => {
-  return http.post(`/boards/`, data); //"boards/" + id 같음
+  return http.post(`/boards/`, data);
 };
 
 //글번호에 맞는 게시판 글 가져오기
@@ -18,7 +18,7 @@ const get = (id) => {
 };
 
 const update = (data) => {
-  return http.put(`/boards/`, data); //"boards/" + id 같음
+  return http.put(`/boards/`, data);
 };
 
 export default {

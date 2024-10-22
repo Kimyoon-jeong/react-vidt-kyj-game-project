@@ -5,7 +5,7 @@ import RspPage from "../components/pages/RspPage";
 import BoardListPage from "../components/pages/BoardListPage";
 import BoardWritePage from "./../components/pages/BoardWritePage";
 import BoardUpdatePage from "../components/pages/BoardUpdatePage";
-import PrepareListPage from "../components/pages/PrepareListPage";
+import LegoListPage from "../components/pages/LegoListPage";
 
 const routes = [
   {
@@ -56,14 +56,14 @@ const routes = [
   },
 
   {
-    path: "/prepare",
+    path: "/lego",
     element: <App />,
-    loader: () => "연습",
+    loader: () => "lego",
     children: [
       {
-        path: "/prepare",
-        loader: () => "연습",
-        element: <PrepareListPage />,
+        path: "/lego",
+        loader: () => "레고테이블",
+        element: <LegoListPage />,
       },
     ],
   },

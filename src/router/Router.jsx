@@ -5,6 +5,7 @@ import RspPage from "../components/pages/RspPage";
 import BoardListPage from "../components/pages/BoardListPage";
 import BoardWritePage from "./../components/pages/BoardWritePage";
 import BoardUpdatePage from "../components/pages/BoardUpdatePage";
+import PrepareListPage from "../components/pages/PrepareListPage";
 
 const routes = [
   {
@@ -50,6 +51,19 @@ const routes = [
         path: "/boards/:bid",
         loader: () => "글업데이트",
         element: <BoardUpdatePage />,
+      },
+    ],
+  },
+
+  {
+    path: "/prepare",
+    element: <App />,
+    loader: () => "연습",
+    children: [
+      {
+        path: "/prepare",
+        loader: () => "연습",
+        element: <PrepareListPage />,
       },
     ],
   },

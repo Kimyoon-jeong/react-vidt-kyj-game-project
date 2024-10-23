@@ -34,9 +34,9 @@ const BoardListPage = () => {
       .then((response) => {
         console.log(response);
         setBoards(response.data.boards);
-        setPaging(response.data.page);
 
         console.log(response.data.page);
+        setPaging(response.data.page);
       })
       .catch((e) => {
         console.log(e);
@@ -45,12 +45,13 @@ const BoardListPage = () => {
 
   const deleteBoard = (e) => {
     const { name, value } = e.target;
+
     console.log(name + "::" + value);
 
     boardService
       .remove(value)
-      .then((respose) => {
-        console.log(respose);
+      .then((response) => {
+        console.log(response);
         initBoards();
       })
       .catch((e) => {
@@ -59,7 +60,7 @@ const BoardListPage = () => {
   };
 
   const onClickPaging = (e) => {
-    e.preventDefault(); // 기존에 링크 동작을 하지 말아라
+    e.preventDefault(); //기존에 링크 동작을 하지 말아라
 
     console.log(e.target.pathname);
     console.log(e.target.search);
@@ -144,12 +145,14 @@ const BoardListPage = () => {
               </table>
             </div>
             {/* 페이징           */}
+
             {paging != null ? (
               <Pagingnation
                 paging={paging}
                 onClickPaging={onClickPaging}
               ></Pagingnation>
             ) : null}
+
             <hr />
             <Link to="/boards/write">
               <button type="button" className="btn btn-primary">

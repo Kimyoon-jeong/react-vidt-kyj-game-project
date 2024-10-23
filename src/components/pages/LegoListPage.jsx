@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
-import boardService from "../../services/BoardService";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 const LegoListPage = () => {
-  const url = "https://sample.bmaster.kro.kr/contacts?pageno=1&pagesize=10";
   const [boards, setBoards] = useState([]);
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const url = `https://sample.bmaster.kro.kr/contacts?pageno=${pageNo}&pagesize=${pageSize}`;
 
   useEffect(() => {
-    console.log("use Effective 실행");
+    console.log("useEffect");
     initBoards();
-  }, []);
+  }, [pageNo]);
 
   const initBoards = () => {
     axios
       .get(url)
-
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
         setBoards(response.data.contacts);
-        console.log(response.data.contacts);
+        setTotalPages(response.data.totalPages || 10);
       })
       .catch((e) => {
         console.log(e);
@@ -27,26 +28,21 @@ const LegoListPage = () => {
   };
 
   const deleteBoard = (e) => {
-    const { name, value } = e.target;
-    console.log(name + "::" + value);
-
+    const { value } = e.target;
     setBoards(boards.filter((board) => board.no !== value));
+  };
+
+  const handlePageChange = (newPageNo) => {
+    if (newPageNo >= 1 && newPageNo <= totalPages) {
+      setPageNo(newPageNo);
+    }
   };
 
   return (
     <div className="container mt-3">
       <div className="container-fluid">
         <h1 className="h3 mb-2 text-gray-800">게시판</h1>
-        <p className="mb-4">
-          DataTables is a third party plugin that is used to generate the demo
-          table below. For more information about DataTables, please visit the{" "}
-          <a target="_blank" href="https://datatables.net">
-            official DataTables documentation
-          </a>
-          .
-        </p>
 
-        {/* <!-- DataTales Example --> */}
         <div className="card shadow mb-4">
           <div className="card-header py-3">
             <h6 className="m-0 font-weight-bold text-primary">
@@ -59,7 +55,7 @@ const LegoListPage = () => {
                 className="table table-bordered"
                 id="dataTable"
                 width="100%"
-                cellspacing="0"
+                cellSpacing="0"
               >
                 <thead>
                   <tr>
@@ -71,18 +67,16 @@ const LegoListPage = () => {
                     <th className="text-center">삭제</th>
                   </tr>
                 </thead>
-
                 <tbody>
-                  {boards &&
+                  {boards && //null check
                     boards.map((board) => (
                       <tr key={board.no}>
                         <td>{board.no}</td>
                         <td>{board.name}</td>
                         <td>{board.tel}</td>
-
                         <td>{board.address}</td>
                         <td>
-                          <img src={board.photo}></img>
+                          <img src={board.photo} alt="board" />
                         </td>
                         <td className="text-center">
                           <button
@@ -99,12 +93,30 @@ const LegoListPage = () => {
               </table>
             </div>
 
-            <hr />
+            {/* Pagination Controls */}
+            <div className="pagination justify-content-center">
+              <button
+                className="btn btn-primary"
+                disabled={pageNo < 2}
+                onClick={() => handlePageChange(pageNo - 1)}
+              >
+                이전
+              </button>
+              <span className="mx-2">
+                {pageNo} / {totalPages}
+              </span>
+              <button
+                className="btn btn-primary"
+                disabled={pageNo === totalPages}
+                onClick={() => handlePageChange(pageNo + 1)}
+              >
+                다음
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    // <!-- /.container-fluid -->);
   );
 };
 

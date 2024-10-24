@@ -1,26 +1,49 @@
 import React, { useEffect, useState } from "react";
+import boardService from "../../services/BoardService";
+import { Link } from "react-router-dom";
 import axios from "axios";
+import LegoPagingnation from "../board/LegoPagingnation";
 
 const LegoListPage = () => {
-  const [boards, setBoards] = useState([]);
-  const [pageNo, setPageNo] = useState(1);
-  const [pageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
+  let initPaging = {
+    // ✔ 화면에 보여질 페이지 그룹
+    // ✔ 화면에 보여질 첫번째 페이지
+    // ✔ 화면에 보여질 마지막 페이지
+    // ✔ 총 페이지 수
+    startPage: 1,
+    endPage: 10,
+    total: 0,
+    prev: false,
+    next: false,
+    pageNum: 1,
+    amount: 10, //고정
+  };
 
-  const url = `https://sample.bmaster.kro.kr/contacts?pageno=${pageNo}&pagesize=${pageSize}`;
+  const [boards, setBoards] = useState([]);
+  const [paging, setPaging] = useState(initPaging);
 
   useEffect(() => {
-    console.log("useEffect");
+    console.log("use Effective 실행");
     initBoards();
-  }, [pageNo]);
+  }, []);
 
-  const initBoards = () => {
+  const initBoards = (pageno = "1") => {
+    let url =
+      "https://sample.bmaster.kro.kr/contacts?pageno=" +
+      pageno +
+      "&pagesize=10";
     axios
       .get(url)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         setBoards(response.data.contacts);
-        setTotalPages(response.data.totalPages || 10);
+
+        initPaging.pageNum = response.data.pageno;
+        initPaging.total = response.data.totalcount;
+        initPaging.endPage = initPaging.total / response.data.pagesize;
+        initPaging.startPage = 1; //endPage - 9;
+
+        setPaging(initPaging);
       })
       .catch((e) => {
         console.log(e);
@@ -28,21 +51,32 @@ const LegoListPage = () => {
   };
 
   const deleteBoard = (e) => {
-    const { value } = e.target;
+    const { name, value } = e.target;
+    console.log(name + "::" + value);
+
     setBoards(boards.filter((board) => board.no !== value));
   };
 
-  const handlePageChange = (newPageNo) => {
-    if (newPageNo >= 1 && newPageNo <= totalPages) {
-      setPageNo(newPageNo);
-    }
+  const onClickPaging = (e) => {
+    e.preventDefault(); // 기존에 링크 동작을 하지 말아라
+    console.log(e.target.text);
+    initBoards(e.target.text);
   };
 
   return (
     <div className="container mt-3">
       <div className="container-fluid">
         <h1 className="h3 mb-2 text-gray-800">게시판</h1>
+        <p className="mb-4">
+          DataTables is a third party plugin that is used to generate the demo
+          table below. For more information about DataTables, please visit the{" "}
+          <a target="_blank" href="https://datatables.net">
+            official DataTables documentation
+          </a>
+          .
+        </p>
 
+        {/* <!-- DataTales Example --> */}
         <div className="card shadow mb-4">
           <div className="card-header py-3">
             <h6 className="m-0 font-weight-bold text-primary">
@@ -55,7 +89,7 @@ const LegoListPage = () => {
                 className="table table-bordered"
                 id="dataTable"
                 width="100%"
-                cellSpacing="0"
+                cellspacing="0"
               >
                 <thead>
                   <tr>
@@ -67,16 +101,18 @@ const LegoListPage = () => {
                     <th className="text-center">삭제</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {boards && //null check
+                  {boards &&
                     boards.map((board) => (
                       <tr key={board.no}>
                         <td>{board.no}</td>
                         <td>{board.name}</td>
                         <td>{board.tel}</td>
+
                         <td>{board.address}</td>
                         <td>
-                          <img src={board.photo} alt="board" />
+                          <img src={board.photo} alt="" />
                         </td>
                         <td className="text-center">
                           <button
@@ -92,31 +128,20 @@ const LegoListPage = () => {
                 </tbody>
               </table>
             </div>
+            {/* 페이징           */}
+            {paging != null ? (
+              <LegoPagingnation
+                paging={paging}
+                onClickPaging={onClickPaging}
+              ></LegoPagingnation>
+            ) : null}
 
-            {/* Pagination Controls */}
-            <div className="pagination justify-content-center">
-              <button
-                className="btn btn-primary"
-                disabled={pageNo < 2}
-                onClick={() => handlePageChange(pageNo - 1)}
-              >
-                이전
-              </button>
-              <span className="mx-2">
-                {pageNo} / {totalPages}
-              </span>
-              <button
-                className="btn btn-primary"
-                disabled={pageNo === totalPages}
-                onClick={() => handlePageChange(pageNo + 1)}
-              >
-                다음
-              </button>
-            </div>
+            <hr />
           </div>
         </div>
       </div>
     </div>
+    // <!-- /.container-fluid -->);
   );
 };
 
